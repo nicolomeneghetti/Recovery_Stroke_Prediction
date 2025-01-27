@@ -206,7 +206,29 @@ for rec=1:length(recording_2_be_used) % this is the struct containing the ispi- 
     recording_2_be_used(rec).aperiodic_exponent_foof_ipsi = aperiodic_exponent_foof_ipsi;
     recording_2_be_used(rec).aperiodic_exponent_foof_conta = aperiodic_exponent_foof_conta;
     recording_2_be_used(rec).mutual_information = mutual_information;
+
+
+    recording_2_be_used(rec).cfc_ipsi_theta_gamma = cfc_ipsi_theta_gamma;
+    recording_2_be_used(rec).cfc_contra_theta_gamma = cfc_contra_theta_gamma;
+    recording_2_be_used(rec).cfc_ipsi_delta_gamma = cfc_ipsi_delta_gamma;
+    recording_2_be_used(rec).cfc_contra_delta_gamma = cfc_contra_delta_gamma;
+
+
+    recording_2_be_used(rec).apEntropy_ipsi = apEntropy_ipsi;
+    recording_2_be_used(rec).apEntropy_contra = apEntropy_contra;
     
+    recording_2_be_used(rec).kolmogorov_ipsi = kolmogorov_ipsi;
+    recording_2_be_used(rec).kolmogorov_contra = kolmogorov_contra;
+
+    recording_2_be_used(rec).hurst_exponent_ipsi = hurst_exponent_ipsi;
+    recording_2_be_used(rec).hurst_exponent_contra = hurst_exponent_contra;
+
+    recording_2_be_used(rec).embeddingDim_ispi = embeddingDim_ispi;
+    recording_2_be_used(rec).embeddingDim_contra = embeddingDim_contra;
+
+    recording_2_be_used(rec).rangeSampleEntropy_ipsi = rangeSampleEntropy_ipsi;
+    recording_2_be_used(rec).rangeSampleEntropy_contra = rangeSampleEntropy_contra;
+
 end
 
 
