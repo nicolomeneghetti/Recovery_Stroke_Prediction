@@ -9,3 +9,5 @@ The codes performing the Leave-One-Animal-Out classification of spontaneous moto
 
 
 Any bugs, questions or curiosity can be addressed at: nicolo.meneghetti@santannapisa.it
+
+Please check also my personal website: https://nicolomeneghetti.github.io/ 
