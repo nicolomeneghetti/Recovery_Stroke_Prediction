@@ -7,3 +7,5 @@ The codes performing the Leave-One-Animal-Out classification of spontaneous moto
 1) The validation and train procedures codes are in the "validation and train" folder
 2) The test procedures codes are in the "validation and train" folder
 
+
+Any bugs, questions or curiosity can be addressed at: nicolo.meneghetti@santannapisa.it
