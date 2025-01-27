@@ -1,4 +1,4 @@
-% Nicolò Meneghetti
+% NicolÃ² Meneghetti
 
 clear all force; clc; close all force;
 
@@ -153,7 +153,36 @@ for rec=1:length(recording_2_be_used) % this is the struct containing the ispi- 
         
         granger_contra_su_ipsi(end+1) = table2array(summary(1,4));
         granger_ipsi_su_contra(end+1) = table2array(summary(2,4));
+
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Cross-frequency coupling
+        [cfc_ipsi_theta_gamma(end+1), cfc_contra_theta_gamma(end+1), ....
+         cfc_ipsi_delta_gamma(end+1), cfc_contra_delta_gamma(end+1)] = cross_freq_coupling_function(signal_ipsi(beginning_window:end_window),signal_contra(beginning_window:end_window), fs);
         
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % approximateEntropy
+        apEntropy_ipsi(end+1) = approximateEntropy(signal_ipsi(beginning_window:end_window));
+        apEntropy_contra(end+1) = approximateEntropy(signal_contra(beginning_window:end_window));
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Kolmogorov
+        kolmogorov_ipsi(end+1)=kolmogorov(signal_ipsi(beginning_window:end_window));
+        kolmogorov_contra(end+1)=kolmogorov(signal_contra(beginning_window:end_window));
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Hurst Exponent
+        hurst_exponent_ipsi(end+1) = estimate_hurst_exponent(signal_ipsi(beginning_window:end_window)');
+        hurst_exponent_contra(end+1) = estimate_hurst_exponent(signal_contra(beginning_window:end_window)');
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Embedding dimension
+        [XR,eLag_ispi,eDim_ispi] = phaseSpaceReconstruction(signal_ipsi(beginning_window:end_window));
+        [XR,eLag_contra,eDim_contra] = phaseSpaceReconstruction(signal_contra(beginning_window:end_window));
+        
+        embeddingDim_ispi(end+1)=eDim_ispi; embeddingDim_contra(end+1)=eDim_contra;
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Sample entropy
+        rangeSampleEntropy_ipsi(end+1)=RangeEn_B(signal_ipsi(beginning_window:end_window), eDim_ispi, 0.2);
+        rangeSampleEntropy_contra(end+1)=RangeEn_B(signal_contra(beginning_window:end_window), eDim_contra, 0.2);
+
     end
     
     
