@@ -1,21 +1,26 @@
+% Nicolo Meneghetti
+
 clear all force;
 close all force;
 clc;
 
 home_directory = cd; 
 %%
-
+% Set of tested classifiers
 classifiers = [cellstr('SVMrbf'); cellstr('SVMlin'); cellstr('SVMquad'); ...
     cellstr('SVMcub'); cellstr('RF'); cellstr('kNN');];
 
-
+% Set of tested windows length
 windows = [cellstr('30_seconds'), cellstr('60_seconds')];
 
+% Set of tested overlap between neighbouring windows
 overlaps = [cellstr('50_overlap'), cellstr('NO_overlap'), cellstr('random_windows')];
 
+% This code is performed for the classification of motor recovery class from post-stroke LFPs. To change it to 
+% baseline recording change this parameter to 'baseline'
 time_relative_to_stroke = '2gg';
 
-% ANIMAL NAMES
+% vector of animal names used in this study (the names are arbitrary)
 animal_vector = cell({}); 
 animal_vector{1}='347_0';
 animal_vector{2}='347_sx';
@@ -36,17 +41,18 @@ animal_vector{16}='cbs130_dx';
 
 
 final_list_results = []; 
-%%
+%% main for loop: the LOAO loops across the animal: one of them is treated as the test animal in each iteration
 for animale_leave_1_out = 1:length(animal_vector)
     disp(['%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%']);
     disp(['%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%']);
     disp(['LEAVING OUT ANIMAL ' num2str(animale_leave_1_out) ' of ' num2str(length(animal_vector))]);
     disp(['%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%']);
     disp(['%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%']);
+    %loop across overlaps
     for iii = 1:length(overlaps)
-        
+        %loop across window lengths
         for jjj = 1:length(windows)
-    
+            %loop across classifiers
             for kkk = 1:length(classifiers)
     
                 overlap = overlaps{iii};
@@ -54,9 +60,9 @@ for animale_leave_1_out = 1:length(animal_vector)
                 classifier = classifiers{kkk};
                 
                 %% Load and prepare data
-                
                 DIR_main = ['folders_to_data\'];
                 filename = ['features_', window,'_', overlap, '_',time_relative_to_stroke , '.mat'];
+
                 
                 load([DIR_main, filename]);
                 
@@ -72,7 +78,6 @@ for animale_leave_1_out = 1:length(animal_vector)
                 Y = T.label_recover;
                 
                 %% Split dataset
-                
                 % leave one animal out : LOAO
                 idTest = [cellstr(animal_vector{animale_leave_1_out})]; 
                 
@@ -94,12 +99,10 @@ for animale_leave_1_out = 1:length(animal_vector)
                 selectedFeatures = {1:size(X,2)}; % we select ALL the features in the dataset
                 
                 %% Feature selection and classification (Training/Validation LOSO-CV)
-                
                 Results_tot = cell(0);
                 for i = 1:length(selectedFeatures)
                 
                     nF = selectedFeatures{i}; 
-                %     nF = selectedFeatures{length(selectedFeatures)}; % Just for test
                 
                     X_trainval = X(:,nF);
                     Y_trainval = Y;
@@ -137,7 +140,7 @@ for animale_leave_1_out = 1:length(animal_vector)
                 final_list_results(end).window = window; 
                 final_list_results(end).overlap = overlap; 
                 
-                [Summary_accuracy_metrics] = from_Result_tot_to_accuracy_metrics(Results_tot, 'accuracy');
+                [Summary_accuracy_metrics] = from_Result_tot_to_accuracy_metrics(Results_tot, 'accuracy'); %custom-made function to compute the accuracy metrics
                 if(iscell(Summary_accuracy_metrics(1)))
                     final_list_results(end).idx = cell2mat(Summary_accuracy_metrics(1));
                     final_list_results(end).accuracy_subject = cell2mat(Summary_accuracy_metrics(2));
@@ -162,7 +165,7 @@ end
 save([home_directory,'\', 'validation_results_leave_one_animal_out.mat'], 'final_list_results');
 
 best_validation_across_left_out_animals = struct([]); 
-for an=1:length(animal_vector)
+for an=1:length(animal_vector) %for each animal, select the set of hyperparameters maximizing the validation accuracy
     indexes_animal = arrayfun(@(x) strcmp(x.left_out_animal,animal_vector{an}),final_list_results); 
     rows_animal = final_list_results(indexes_animal==1); 
 
@@ -195,6 +198,7 @@ for an=1:length(animal_vector)
     end
 end
 
+% save the set of best hyperparameters for each of the tested animal
 save([home_directory,'\', 'best_validation_results_across_left_out_animals.mat'], 'best_validation_across_left_out_animals');
 
 
